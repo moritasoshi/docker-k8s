@@ -4,19 +4,19 @@ metadata:
   name: debug
   namespace: default
   labels:
+    app: weblog
     env: study
 spec:
   containers:
     - name: debug
-      image: centos:7
+      image: debug
+      imagePullPolicy: Never
       command:
         - "sh"
         - "-c"
       args:
-        - while true
+        - |
+          while true
           do
-          sleep ${DELAY}
+            sleep 5
           done
-      env:
-        - name: "DELAY"
-          value: "5"
