@@ -1,0 +1,5 @@
+# COPYで無視するファイルの指定
+
+**/.git
+**/.DS_Store
+**/node_modules
