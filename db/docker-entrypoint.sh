@@ -1,6 +1,6 @@
 #! /bin/sh
 INIT_FLAG_FILE=/data/db/init-completed
-INIT_LOG_FILE=/data/db/init/mongod.log
+INIT_LOG_FILE=/data/db/init-mongod.log
 
 start_mongod_as_daemon() {
   echo
@@ -10,31 +10,33 @@ start_mongod_as_daemon() {
     --fork \
     --logpath ${INIT_LOG_FILE} \
     --quiet \
-    --build_ip 127.0.0.1 \
+    --bind_ip 127.0.0.1 \
     --smallfiles
 }
-crate_user() {
+
+create_user() {
   echo
   echo "> create user ..."
   echo
   if [ ! "$MONGO_INITDB_ROOT_USERNAME" ] || [ ! "$MONGO_INITDB_ROOT_PASSWORD" ]; then
     return
   fi
-  mongo "${MONGO_INITDB_DATABASE}" <<EOS
+  mongo "${MONGO_INITDB_DATABASE}" <<-EOS
   db.createUser({
-    user: "$MONGO_INITDB_ROOT_USERNAME",
-    pwd: "$MONGO_INITDB_ROOT_PASSWORD",
-    roles: [{role: "root}, db: "${MONGO_INITDB_DATABASE: -admin}"]
+    user: "${MONGO_INITDB_ROOT_USERNAME}",
+    pwd: "${MONGO_INITDB_ROOT_PASSWORD}",
+    roles: [{ role: "root", db: "${MONGO_INITDB_DATABASE:-admin}"}]
   })
 EOS
 }
+
 create_initialize_flag() {
   echo
-  echo "> create initialize flag ..."
+  echo "> create initialize flag file ..."
   echo
-  cat <EOF >"${INIT_FLAG_FILE}"
-  [ $(date + %Y-%m-%dT%H:%M:%S.%3N) ] Initialize scripts if finished.
-  EOF
+  cat <<-EOF >"${INIT_FLAG_FILE}"
+[$(date +%Y-%m-%dT%H:%M:%S.%3N)] Initialize scripts if finigshed.
+EOF
 }
 
 stop_mongod() {
@@ -46,10 +48,10 @@ stop_mongod() {
 
 if [ ! -e ${INIT_FLAG_FILE} ]; then
   echo
-  echo "--- Initialize MonogoDB ---"
+  echo "--- Initialize MongoDB ---"
   echo
   start_mongod_as_daemon
-  crate_user
+  create_user
   create_initialize_flag
   stop_mongod
 fi
