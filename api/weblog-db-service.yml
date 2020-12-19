@@ -1,0 +1,30 @@
+# apiのエンドポイント公開
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: default
+  labels:
+    env: study
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+    nodePort: 32717
+  type: NodePort
+
+# dbのエンドポイント公開
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: mongodb
+  namespace: default
+  labels:
+    env: study
+subsets:
+- addresses:
+  - ip: 10.1.0.45
+  ports:
+  - port: 27017
+
