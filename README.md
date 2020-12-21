@@ -1,8 +1,8 @@
 ## Memo
-### Nginx Ingress Controller の有効化
-[https://kubernetes.github.io/ingress-nginx/deploy/]
+- Nginx Ingress Controller の有効化
+[NGINX Ingress Controller - Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/)
 ```
-# install
+# Install Nginx Ingress Controller
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.41.2/deploy/static/provider/cloud/deploy.yaml
 
 # Detect installed version
